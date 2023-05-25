@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:isar/isar.dart';
+import 'package:moviefrontend/config/isaar_service.dart';
+import 'package:moviefrontend/db_lite/movie_favorite.dart';
 import 'package:moviefrontend/features/home/viewmodel/category_bloc/category_state.dart';
 import 'package:moviefrontend/features/home/viewmodel/movie_bloc/movie_event.dart';
 import 'package:moviefrontend/features/home/viewmodel/movie_bloc/movie_state.dart';
@@ -6,6 +10,8 @@ import 'package:moviefrontend/features/home/viewmodel/toprated_bloc/toprated_eve
 import 'package:moviefrontend/features/home/viewmodel/toprated_bloc/toprated_state.dart';
 import 'package:moviefrontend/features/home/widgets/header_home.widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviefrontend/features/save/screens/movie_save.screen.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,94 +32,103 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.to(MovieScreenSave());
+          },
+          child: Icon(Icons.favorite_border),
+        ),
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Header(),
-        const SizedBox(height: 20),
-        // BlocBuilder<CategoryCubit, CategoryEvent>(builder: (context, state) {
-        //   if (state is CategoryLoading) {
-        //     return const Center(child: CircularProgressIndicator());
-        //   } else if (state is CategoryLoaded) {
-        //     return Category(
-        //       event: state.event,
-        //     );
-        //   } else if (state is CategoryError) {
-        //     return const Center(child: Text("Error"));
-        //   } else {
-        //     return const Center(child: Text("Error"));
-        //   }
-        // }),
-        const Padding(
-          padding: EdgeInsets.only(left: 10.0),
-          child: Text("Find Movies, TV shows\nand more ...",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-        ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Header(),
+            const SizedBox(height: 20),
+            // BlocBuilder<CategoryCubit, CategoryEvent>(builder: (context, state) {
+            //   if (state is CategoryLoading) {
+            //     return const Center(child: CircularProgressIndicator());
+            //   } else if (state is CategoryLoaded) {
+            //     return Category(
+            //       event: state.event,
+            //     );
+            //   } else if (state is CategoryError) {
+            //     return const Center(child: Text("Error"));
+            //   } else {
+            //     return const Center(child: Text("Error"));
+            //   }
+            // }),
+            const Padding(
+              padding: EdgeInsets.only(left: 10.0),
+              child: Text("Find Movies, TV shows\nand more ...",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            ),
 
-        const SizedBox(height: 20),
-        Container(
-          height: 40,
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: TextField(
-            textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(25.7),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(25.7),
-                ),
-                fillColor: Colors.grey[200],
-                filled: true,
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-                prefixIcon: const Icon(Icons.search, size: 15),
-                hintText: "Search movies...",
-                border: const OutlineInputBorder()),
-          ),
-        ),
-        const SizedBox(height: 30),
-        const Padding(
-          padding: EdgeInsets.only(left: 10.0),
-          child: Text("\u{1F3A5} Upcoming Movies",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-        ),
-        const SizedBox(height: 20),
-        BlocBuilder<MovieCubit, MovieEvent>(builder: (context, state) {
-          if (state is MovieLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is MovieLoaded) {
-            return upcomingWidget(state);
-          } else if (state is MovieError) {
-            return const Center(child: Text("Error"));
-          } else {
-            return const Center(child: Text("Error"));
-          }
-        }),
-        const Padding(
-          padding: EdgeInsets.only(left: 10.0, top: 20),
-          child: Text("\u{1F525} Trending Movies",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-        ),
-        const SizedBox(height: 20),
-        BlocBuilder<TopRatedCubit, TopRatedEvent>(builder: (context, state) {
-          if (state is TopRatedLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is TopRatedLoaded) {
-            return trendWidget(state);
-          } else {
-            return const Center(child: Text("Error"));
-          }
-        })
-      ],
-    ))));
+            const SizedBox(height: 20),
+            Container(
+              height: 40,
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: TextField(
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(25.7),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(25.7),
+                    ),
+                    fillColor: Colors.grey[200],
+                    filled: true,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                    prefixIcon: const Icon(Icons.search, size: 15),
+                    hintText: "Search movies...",
+                    border: const OutlineInputBorder()),
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.only(left: 10.0),
+              child: Text("\u{1F3A5} Upcoming Movies",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(height: 20),
+            BlocBuilder<MovieCubit, MovieEvent>(builder: (context, state) {
+              if (state is MovieLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is MovieLoaded) {
+                return upcomingWidget(state);
+              } else if (state is MovieError) {
+                return const Center(child: Text("Error"));
+              } else {
+                return const Center(child: Text("Error"));
+              }
+            }),
+            const Padding(
+              padding: EdgeInsets.only(left: 10.0, top: 20),
+              child: Text("\u{1F525} Trending Movies",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(height: 20),
+            BlocBuilder<TopRatedCubit, TopRatedEvent>(
+                builder: (context, state) {
+              if (state is TopRatedLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is TopRatedLoaded) {
+                return trendWidget(state);
+              } else {
+                return const Center(child: Text("Error"));
+              }
+            })
+          ],
+        ))));
   }
 
   SingleChildScrollView upcomingWidget(MovieLoaded state) {
+    IsaarService().findDuplicate(state.movie[0].id!);
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
@@ -158,18 +173,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: 140,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 12,
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                              size: 12,
+                            ),
+                            Text(
+                              state.movie[i].voteAverage.toString(),
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
-                        Text(
-                          state.movie[i].voteAverage.toString(),
-                          style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w400),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () async {
+                              final data = MovieFavorite()
+                                ..idFilm = state.movie[i].id
+                                ..judulFilm = state.movie[i].title
+                                ..urlFilm =
+                                    "https://image.tmdb.org/t/p/w500${state.movie[i].posterPath}";
+
+                              IsaarService().createDataMovie(data);
+                            },
+                            child: const Icon(
+                              Icons.favorite,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   )
