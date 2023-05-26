@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isar/isar.dart';
 import 'package:moviefrontend/config/isaar_service.dart';
 import 'package:moviefrontend/db_lite/movie_favorite.dart';
 import 'package:moviefrontend/features/home/viewmodel/category_bloc/category_state.dart';
@@ -11,7 +10,6 @@ import 'package:moviefrontend/features/home/viewmodel/toprated_bloc/toprated_sta
 import 'package:moviefrontend/features/home/widgets/header_home.widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moviefrontend/features/save/screens/movie_save.screen.dart';
-import 'package:path_provider/path_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,9 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(MovieScreenSave());
+            Get.to(const MovieScreenSave());
           },
-          child: Icon(Icons.favorite_border),
+          child: const Icon(Icons.favorite_border),
         ),
         body: SafeArea(
             child: SingleChildScrollView(

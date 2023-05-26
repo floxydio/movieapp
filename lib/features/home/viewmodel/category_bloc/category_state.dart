@@ -3,11 +3,13 @@ import 'package:moviefrontend/features/home/viewmodel/category_bloc/category_eve
 import 'package:moviefrontend/repository/movie.repo.dart';
 
 class CategoryCubit extends Cubit<CategoryEvent> {
-  CategoryCubit() : super(CategoryStarted());
+  final MovieRepositoryList movieRepo;
+
+  CategoryCubit({required this.movieRepo}) : super(CategoryStarted());
 
   void getCategory() async {
     emit(CategoryLoading());
-    var response = await MovieRepositoryList().getCategories();
+    var response = await movieRepo.getCategories();
     if (response.genres!.isNotEmpty) {
       emit(CategoryLoaded(event: response.genres!));
     } else {

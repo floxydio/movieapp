@@ -3,7 +3,9 @@ import 'package:moviefrontend/features/home/viewmodel/toprated_bloc/toprated_eve
 import 'package:moviefrontend/repository/movie.repo.dart';
 
 class TopRatedCubit extends Cubit<TopRatedEvent> {
-  TopRatedCubit() : super(TopRatedStarted());
+  final MovieRepositoryList movieRepo;
+
+  TopRatedCubit({required this.movieRepo}) : super(TopRatedStarted());
 
   void getTopRated() async {
     emit(TopRatedLoading());

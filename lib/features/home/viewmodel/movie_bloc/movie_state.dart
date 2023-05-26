@@ -3,11 +3,12 @@ import 'package:moviefrontend/features/home/viewmodel/movie_bloc/movie_event.dar
 import 'package:moviefrontend/repository/movie.repo.dart';
 
 class MovieCubit extends Cubit<MovieEvent> {
-  MovieCubit() : super(MovieStarted());
+  final MovieRepositoryList movieRepo;
+  MovieCubit({required this.movieRepo}) : super(MovieStarted());
 
   void getMovie() async {
     emit(MovieLoading());
-    var response = await MovieRepositoryList().getMovieUpcoming();
+    var response = await movieRepo.getMovieUpcoming();
     if (response.results!.isNotEmpty) {
       emit(MovieLoaded(movie: response.results!));
     } else {

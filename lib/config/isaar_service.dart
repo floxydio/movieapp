@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:moviefrontend/db_lite/movie_favorite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,7 +25,6 @@ class IsaarService {
     final isar = await db;
 
     var data = await isar.movieFavorites.where(distinct: true).findAll();
-    print(data.map((e) => e.idFilm));
     return data;
   }
 
@@ -44,15 +44,16 @@ class IsaarService {
       ..urlFilm = data.urlFilm;
 
     await isar.writeTxn(() async {
-      await isar.movieFavorites
-          .put(form)
-          .then((value) => print("Success Save"));
+      await isar.movieFavorites.put(form).then((value) {
+        if (kDebugMode) {
+          print("Success Insert");
+        }
+      });
     });
   }
 
   Future<bool> deleteDataMovieById(int id) async {
     final isar = await db;
-    print(id);
     await isar.writeTxn(() async {
       await isar.movieFavorites.delete(id).then((value) {
         if (value) {
